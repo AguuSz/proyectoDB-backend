@@ -3,6 +3,7 @@ const router = express.Router();
 
 // Importando modelos
 const { List } = require("../models/List");
+const { Task } = require("../models/Task");
 
 router.get("/", (req, res) => {
 	List.find()
@@ -44,6 +45,62 @@ router.delete("/delete/:id", (req, res) => {
 		_id: req.params.id,
 	}).then((removedListDoc) => {
 		res.send(removedListDoc);
+	});
+});
+
+// ------------- Tasks -------------
+router.get("/:listId/tasks/:taskId", (req, res) => {
+	Task.findOne({
+		_id: req.params.taskId,
+		_listId: req.params.listId,
+	}).then((task) => {
+		res.sen(task);
+	});
+});
+
+router.get("/:listId/tasks", (req, res) => {
+	// Devolvemos las tareas
+	Task.find({
+		_listId: req.params.listId,
+	}).then((tasks) => {
+		res.send(tasks);
+	});
+});
+
+router.post("/:listId/tasks", (req, res) => {
+	// Crear una nueva tarea dentro de la lista
+	let newTask = new Task({
+		title: req.body.title,
+		_listId: req.params.listId,
+	});
+	newTask.save().then((newTaskDoc) => {
+		res.send(newTaskDoc);
+	});
+});
+
+router.put("/:listId/tasks/:taskId", (req, res) => {
+	// Devolvemos las tareas
+	Task.findOneAndUpdate(
+		{
+			_id: req.params.taskId,
+			_listId: req.params.listId,
+		},
+		{
+			$set: req.body,
+		}
+	).then(() => {
+		// Envia el status 200 (todo ok)
+		res.sendStatus(200);
+	});
+});
+
+router.delete("/:listId/tasks/:taskId", (req, res) => {
+	// Devolvemos las tareas
+	Task.findOneAndRemove({
+		_id: req.params.taskId,
+		_listId: req.params.listId,
+	}).then((removedTask) => {
+		res.send(removedTask);
 	});
 });
 

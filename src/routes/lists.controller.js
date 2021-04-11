@@ -33,13 +33,13 @@ router.put("/:id", (req, res) => {
 		{
 			$set: req.body,
 		}
-	).then(() => {
+	).then((updatedList) => {
 		// Envia el status 200 (todo ok)
-		res.sendStatus(200);
+		res.send(updatedList);
 	});
 });
 
-router.delete("/delete/:id", (req, res) => {
+router.delete("/:id", (req, res) => {
 	// Vamos a eliminar un registro por medio de su id.
 	List.findOneAndRemove({
 		_id: req.params.id,
@@ -54,7 +54,7 @@ router.get("/:listId/tasks/:taskId", (req, res) => {
 		_id: req.params.taskId,
 		_listId: req.params.listId,
 	}).then((task) => {
-		res.sen(task);
+		res.send(task);
 	});
 });
 
@@ -88,9 +88,9 @@ router.put("/:listId/tasks/:taskId", (req, res) => {
 		{
 			$set: req.body,
 		}
-	).then(() => {
+	).then((deletedTask) => {
 		// Envia el status 200 (todo ok)
-		res.sendStatus(200);
+		res.send(deletedTask);
 	});
 });
 
